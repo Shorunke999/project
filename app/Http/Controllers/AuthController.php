@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -17,5 +18,17 @@ class AuthController extends Controller
                         Password::min(8)->mixedCase()->numbers()->symbols(),
                     ]
                 ]);
+        
+        $user = \App\Models\User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password'=> Hash::make($data['password']),
+
+        ]);
+        $token = $user->createTokrn('main')->plainTextToken;
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
     }
 }
