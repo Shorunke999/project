@@ -18,15 +18,10 @@ const store = createStore({
     getters:{},
     actions:{
         register({commit},user){
-            axiosClient.post('/register',{
-                headers: {
-                    'content-type': 'application/json',
-                    Accept:'application/json',
-                }},user)
+   axiosClient.post('http://127.0.0.1:8000/api/register',user)
             .then((res)=>{
-                res.json()
-            })
-            .then((res)=>{
+                console.log(res);
+                sessionStorage.setItem('TOKEN',res.data.token);
                 commit('setUser',res);
                 return res;
             })
@@ -38,8 +33,8 @@ const store = createStore({
             state.user.token = null
         },
         setUser: (state, userData)=>{
-            state.user.data.token = userData.token;
-            state.user.data = userData.user;
+            state.user.token = userData.data.token;
+            state.user.data = userData.data.user;
         }
     },
    modules:{},
