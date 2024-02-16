@@ -49,7 +49,7 @@
   </template>
   
 <script setup>
-  import { useRouter } from 'vue-router';
+  import { useRoute } from 'vue-router';
   import store from '../store/index';
   import axiosClient from '../axios/axios';
   const user ={
@@ -59,14 +59,15 @@
           password_confirmation:''
   };
   function register(){
-    store.dispatch('register',user)
-    .then((res)=>{ 
-      console.log(res);
-      useRouter().push({
-        name:'Dashboard'
-      });
-    });
-       
+    axiosClient.post('http://127.0.0.1:8000/api/register',user)
+    .then((res)=>{
+        console.log(res);
+        store.dispatch('authAction',res)
+        .then(()=>{
+            useRoute().push({
+              name:'Dashboard'});
+            });
+    })
   }
   
 </script>

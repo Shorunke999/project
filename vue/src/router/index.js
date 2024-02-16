@@ -6,6 +6,7 @@ import DefaultLayout from '../components/DefaultLayout.vue';
 import Surveys from '../components/Surveys.vue';
 import store from '../store/index.js';
 import authLayout from '../components/authLayout.vue';
+import SurveyView from '../views/SurveyView.vue';
 
 const routes = [
     {
@@ -24,6 +25,16 @@ const routes = [
                 path:'/survey',
                 name: 'Survey',
                 component:Surveys
+            },
+            {
+                path:'/survey/Create',
+                name: 'surveyCreate',
+                component:SurveyView
+            },
+            {
+                path:'/survey/:id',
+                name: 'surveyView',
+                component:SurveyView
             },
         ]
     },
@@ -60,4 +71,4 @@ router.beforeEach((to,from,next)=>{
         next();
     }
 });
-export default router;
+export default router

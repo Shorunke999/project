@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('survey_questions_answers', function (Blueprint $table) {
+        Schema::create('options', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Survey_questions::class,'survey_question_id');
-            $table->foreignIdFor(\App\Models\Survey_answers::class,'survey_answer_id');
-            $table->text('answer');
+            $table->foreignId('questionId')->references('id')->on('questions');
+            $table->string('option');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('survey_questions_answers');
+        Schema::dropIfExists('options');
     }
 };
