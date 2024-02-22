@@ -19,10 +19,23 @@ class QuestionRecource extends JsonResource
             'question'=>$this->question,
             'answer'=>$this->answer,
             'options'=>[
-                'option_1'=>$this->options[0]['option_1'],
-                'option_2'=>$this->options[0]['option_2'],
-                'option_3'=>$this->options[0]['option_3'],
-                'option_4'=>$this->options[0]['option_4'],
+                
+                [
+                    'id'=>$this->options[0]['id'],
+                    'option'=>$this->options[0]['option']
+                ],
+                [
+                    'id'=>$this->options[1]['id'],
+                    'option'=>$this->options[1]['option']
+                ],
+                [
+                    'id'=>$this->options[2]['id'],
+                    'option'=>$this->options[2]['option']
+                ],
+                [
+                    'id'=>$this->options[3]['id'],
+                    'option'=>$this->options[3]['option']
+                ],
             ]
         ];
     }

@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function register(Request $request){
       
-        $data= $request->validate([
+       $data= $request->validate([
                     'name'=> 'required|string',
                     'email'=> 'required|email|string|unique:users,email',
                     'password' => [
@@ -26,8 +26,8 @@ class AuthController extends Controller
                     'password'=> Hash::make($request->password),
 
         ]);
-        $token = $user->createToken('main')->plainTextToken;
-        return response()->json([
+        $token = $user->createToken('user')->plainTextToken;
+        return response([
             'user' => $user,
             'token' => $token,
         ]);

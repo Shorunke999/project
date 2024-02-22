@@ -1,34 +1,25 @@
 <template>
     <div>
       <pageComponent> 
-        <div class="flex items-center text-black justify-center">
+        <div class="flex items-center text-black justify-center" v-if="questionData">
            <h1 class="text-3xl font-bold text-gray-900">Text Question</h1>
-           <div v-if="questionData" class=""> 
-              {{ questionData.question }}
-          </div>
+           <div>
+             {{ questionData.question }} 
+            </div>
           <ul>
-            <li>
-              <input type="radio" v-model="studentAnswer" :value="questionData.options.option_1" name="option_1">
-              <label for="option_1"> {{ questionData.options.option_1 }}</label>
-            </li>
-            <li>
-              <input type="radio" v-model="studentAnswer" :value="questionData.options.option_2" name="option_2">
-              <label for="option_2"> {{ questionData.options.option_2 }}</label>
-            </li>
-            <li>
-              <input type="radio" v-model="studentAnswer" :value="questionData.options.option_3" name="option_3">
-              <label for="option_3"> {{ questionData.options.option_3 }}</label>
-            </li>
-            <li>
-              <input type="radio" v-model="studentAnswer" :value="questionData.options.option_4" name="option_4">
-              <label for="option_4"> {{ questionData.options.option_4 }}</label>
+            <li v-for="(optionData, index) in questionData.options" :key="index">
+              <input type="radio" v-model="studentAnswer[currentPage]" 
+               :value="optionData.option" name="option">
+              <label for="option"> {{ optionData.option }}</label>
             </li>
           </ul>
-          
            <div class="flex justify-between">
             <button @click="nextPage" class="bg-blue-500 hover:bg-gray-500 justify-end"> Next</button>
             <button @click="backPage" class="bg-blue-500 hover:bg-gray-500 justify-start"> Back </button>
            </div>
+          </div>
+          <div v-else class="bg-green-600 hover:bg-gray-500 justify-center" >
+              <button @click="submit">Click to see result</button>
           </div>
       </pageComponent>
     </div>
@@ -44,65 +35,79 @@ export default {
   data(){
     return{
       currentPage: 1,
-      questionData:{
-        id: null,
-        question: '',
-        answer: '',
-        options:{
-          option_1: '',
-          option_2:'',
-          option_3:'',
-          option_4:''
-        }
-      },
-      studentAnswer:null,
-      percentage: null
+      questionData:{},
+      studentAnswer:{},
+      nullable:null,
+      answerArray: localStorage.getItem('answerArray'),
+      setAnswerArray: localStorage.setItem('answerArray',JSON.stringify(this.answerArray)),
     }
   },
   methods:{
     getQuestion(){
-      if (this.currentPage <= 2){
+      if(this.currentPage = 1){
+        localStorage.setItem('answerArray','[]');
+      }
+      if (this.currentPage <= 10 ){
         axios.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage}`)
             .then((res)=>{
               this.questionData = {...res.data.data};
-              //console.log(this.questionData.options.option_1);
-              this.studentAnswer = null;
+              console.log(this.answerArray)
             });
+      }else{
+        this.questionData = null;
+
       }
+
+      
       
     },
-    nextPage(){
-      if(this.studentAnswer != null){
-        if(this.currentPage == 2){
-           this.percentFunc();
-           return;
+    nextPage(){ 
+      if(this.studentAnswer[this.currentPage] != {})
+      {
+        JSON.parse(this.answerArray).push({
+          questionId: this.questionData.id,
+          answer: this.studentAnswer[this.currentPage]
+          });
+          this.setAnswerArray;    
+          console.log(this.answerArray);
+          this.currentPage++;  
+          this.getQuestion();
         }
-        this.currentPage++;  
-        this.getQuestion();
-      }else{
+      else{
         alert('pls make sure to select an option');
       }
+      /*if(this.studentAnswer[this.currentPage] != {}){
+        if (JSON.parse(this.answerArray) != [] && this.answerArray.length > this.currentPage){
+          //if the user use the backbutton
+          JSON.parse(this.answerArray).splice(this.currentPage-1);//removes answer in the array
+          this.answerArray.s({//replace the removed obj in the array with the new answer obj
+          questionId:this.questionData.id,
+          answer: this.studentAnswer[this.currentPage]
+        });
+        }else{
+          //if the user did not use the backbutton to load the question
+         */
     },
     backPage(){
       this.currentPage--;
       this.getQuestion();
-
+      this.studentAnswer[this.currentPage] = JSON.parse(this.answerArray)[this.currentPage-1].answer;
+      console.log(this.studentAnswer);
     },
-    percentFunc(){
-      if (this.studentAnswer != null && 
-      (this.studentAnswer == this.questionData.answer)){
-        this.correctAnswer++
-      }else if(this.currentPage > 2){
-        this.percentage = (this.correctAnswer / 2) * 100;
-        console.log('the percentage of the test is ' + this.percentage);
-      }
+    submit(){
+      axios.post('http://127.0.0.1:8000/api/',JSON.parse(this.answerArray))
+      .then((res)=>{
+        this.$router.push({
+          name:'Score',
+          query: {
+            score: res
+          }
+        });
+      });
     }
   },
   mounted() {
-    if(confirm('Are you ready for the test?')){
-      this.getQuestion();
-      //console.log('asdfg');
-    }
+    this.getQuestion();
   },
 }
 </script>

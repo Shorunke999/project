@@ -3,7 +3,7 @@ import Dashboard from '../views/Dashboard.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import DefaultLayout from '../components/DefaultLayout.vue';
-import Surveys from '../components/Surveys.vue';
+import Score from '../components/Score.vue';
 import store from '../store/index.js';
 import authLayout from '../components/authLayout.vue';
 import SurveyView from '../views/SurveyView.vue';
@@ -24,16 +24,11 @@ const routes = [
             {
                 path:'/survey',
                 name: 'Survey',
-                component:Surveys
+                component:Score
             },
             {
                 path:'/survey/Create',
                 name: 'surveyCreate',
-                component:SurveyView
-            },
-            {
-                path:'/survey/:id',
-                name: 'surveyView',
                 component:SurveyView
             },
         ]

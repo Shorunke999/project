@@ -17,11 +17,13 @@ class DatabaseSeeder extends Seeder
         $data = \App\Models\Questions::create([
             'question' => 'what is not me',
              'answer' => 'all of the above',
-         ])->options()->create([
-            'option_1'=>'bird',
-            'option_2'=>'feather',
-            'option_3'=>'all of the above',
-            'option_4'=> 'animal'
-         ]);
+        ])->answer()->create([
+            'answer'=>'none of thr above'
+        ]);/*->options()->each([
+            ['option'=>'bird'],
+            ['option'=>'feather'],
+            ['option'=>'all of the above'],
+           ['option'=> 'animal']
+         ])->create();*/
     }
 }

@@ -49,7 +49,6 @@
   </template>
   
 <script setup>
-  import { useRoute } from 'vue-router';
   import store from '../store/index';
   import axiosClient from '../axios/axios';
   const user ={
@@ -64,7 +63,7 @@
         console.log(res);
         store.dispatch('authAction',res)
         .then(()=>{
-            useRoute().push({
+            this.$router.push({
               name:'Dashboard'});
             });
     })
