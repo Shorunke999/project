@@ -25,7 +25,6 @@
     </div>
 </template>
 <script>
-//import axios from '../axios/axios';
 import axios from "axios";
 import pageComponent from '../components/pageComponent.vue';
 export default {
@@ -34,59 +33,41 @@ export default {
   },
   data(){
     return{
-      currentPage: 1,
+      currentPage: 0,
       questionData:{},
       studentAnswer:{},
       nullable:null,
-      answerArray: localStorage.getItem('answerArray'),
-      setAnswerArray: localStorage.setItem('answerArray',JSON.stringify(this.answerArray)),
+      answerArray: JSON.parse(localStorage.getItem('answerArray')) || [],
     }
   },
   methods:{
     getQuestion(){
-      if(this.currentPage = 1){
-        localStorage.setItem('answerArray','[]');
-      }
       if (this.currentPage <= 10 ){
         axios.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage}`)
             .then((res)=>{
-              this.questionData = {...res.data.data};
-              console.log(this.answerArray)
+              this.questionData = res.data.data;
+              console.log(this.answerArray);
             });
       }else{
         this.questionData = null;
 
       }
-
-      
-      
     },
     nextPage(){ 
-      if(this.studentAnswer[this.currentPage] != {})
+      if(this.studentAnswer[this.currentPage])
       {
-        JSON.parse(this.answerArray).push({
+        this.answerArray.push({
           questionId: this.questionData.id,
           answer: this.studentAnswer[this.currentPage]
-          });
-          this.setAnswerArray;    
+          });   
           console.log(this.answerArray);
+          localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
           this.currentPage++;  
           this.getQuestion();
         }
       else{
         alert('pls make sure to select an option');
       }
-      /*if(this.studentAnswer[this.currentPage] != {}){
-        if (JSON.parse(this.answerArray) != [] && this.answerArray.length > this.currentPage){
-          //if the user use the backbutton
-          JSON.parse(this.answerArray).splice(this.currentPage-1);//removes answer in the array
-          this.answerArray.s({//replace the removed obj in the array with the new answer obj
-          questionId:this.questionData.id,
-          answer: this.studentAnswer[this.currentPage]
-        });
-        }else{
-          //if the user did not use the backbutton to load the question
-         */
     },
     backPage(){
       this.currentPage--;
