@@ -1,7 +1,7 @@
 <template>
     <div>
       <pageComponent> 
-        <div class="flex items-center text-black justify-center" v-if="questionData">
+        <div class="flex items-center text-black justify-center" v-if="questionData < 3">
            <h1 class="text-3xl font-bold text-gray-900">Text Question</h1>
            <div>
              {{ questionData.question }} 
@@ -36,13 +36,12 @@ export default {
       currentPage: 0,
       questionData:{},
       studentAnswer:{},
-      nullable:null,
       answerArray: JSON.parse(localStorage.getItem('answerArray')) || [],
     }
   },
   methods:{
     getQuestion(){
-      if (this.currentPage <= 10 ){
+      if (this.currentPage < 3 ){
         axios.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage + 1}`)
             .then((res)=>{
               this.questionData = res.data.data;
@@ -56,7 +55,7 @@ export default {
     nextPage(){ 
       if(this.studentAnswer[this.currentPage])
       {
-        this.answerArray.push({
+        this.answerArray[Answer].push({
           questionId: this.questionData.id,
           answer: this.studentAnswer[this.currentPage]
           });   
@@ -69,14 +68,22 @@ export default {
         alert('pls make sure to select an option');
       }
     },
-    backPage(){
-      this.currentPage--;
-      this.getQuestion();
-      this.studentAnswer[this.currentPage] = JSON.parse(this.answerArray)[this.currentPage-1].answer;
-      console.log(this.studentAnswer);
-    },
+    backPage() {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+        this.getQuestion();
+        // Retrieve the selected answer from localStorage and update studentAnswer
+        const storedAnswer = JSON.parse(localStorage.getItem('answerArray'));
+        if (storedAnswer && storedAnswer[this.currentPage]) {
+          this.studentAnswer[this.currentPage] = storedAnswer[this.currentPage].answer;
+        }
+      } else {
+        alert('You are already on the first page.');
+      }
+},
+
     submit(){
-      axios.post('http://127.0.0.1:8000/api/',JSON.parse(this.answerArray))
+      axios.post('http://127.0.0.1:8000/api/answerCheck',this.answerArray)
       .then((res)=>{
         this.$router.push({
           name:'Score',
@@ -88,7 +95,14 @@ export default {
     }
   },
   mounted() {
-    this.getQuestion();
+    if (localStorage.getItem('answerArray')){
+      this.currentPage = JSON.parse(localStorage.getItem('answerArray')).length;
+      console.log(this.currentPage);
+      this.getQuestion();
+    }else{
+      this.getQuestion();
+    }
   },
 }
 </script>
+//https://forms.gle/VvhfZy6fvG8kUAzQ7

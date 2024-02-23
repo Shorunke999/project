@@ -17,6 +17,18 @@ class Controller extends BaseController
     }
     public function answerCheck(Request $request)
     {
-        
+        $questionIdArray = collect($request['Answer'])->pluck('questionId');
+        $dataFromDb = \App\Models\answer::whereIn('questionId',$questionIdArray)->pluck('answer');
+        foreach($dataFromDb as $data){
+            $request['Answer']->map(function ($array_mapped) {
+                if($array_mapped == $data){
+                    $score = $score + 1;
+                }
+            });
+        }
+        $scorePercent = ($score / 10) * 100;
+        return response([
+            'score' => $scorePercent
+        ]);
     }
 }

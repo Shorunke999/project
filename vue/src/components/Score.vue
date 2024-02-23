@@ -18,7 +18,7 @@ export default {
     finish(){
       store.dispatch('signOut')
       .then(()=>{
-        localStorage.setItem('answerArray',null);
+        localStorage.removeItem('answerArray');
         this.$router.push({
           name:'Login'
         });
