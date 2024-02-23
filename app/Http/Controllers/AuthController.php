@@ -26,31 +26,29 @@ class AuthController extends Controller
                     'password'=> Hash::make($request->password),
 
         ]);
-        $token = $user->createToken('user')->plainTextToken;
-        return response([
+        $token = $user->createToken('user1')->plainTextToken;
+        return response()->json([
             'user' => $user,
-            'token' => $token,
         ]);
     }
     public function login(Request $request){
-        $data = $request->validate([
-            'email'=> 'required|email|string|exists:users,email',
-            'password' => 'required',
-            //'remember' => 'boolean'
+        $request->validate([
+            'email' => 'required|email|string|exists:users,email',
+            'password' => 'required|email',
         ]);
-        //$credentials = $data['remember'] ?? false;
-        //unset($credentials['remember']);
-        if(!Auth::attempt($data/*, $credentials*/)){
-            return response()->json([
-                'errorData'=> 'Invalid credentials'
-            ],422);
+     
+        $user = User::where('email', $request->email)->first();
+     
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
-        $user = Auth::user();
-        $token = $user->createToken('main')->plainTextToken;
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ]);
+     
+        return response([
+            'token' =>$user->createToken($request->device_name)->plainTextToken,
+            'user'=> $user
+        ]) ;
     }
     public function logout(){
         $user = Auth::user();

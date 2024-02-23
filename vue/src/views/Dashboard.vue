@@ -43,7 +43,7 @@ export default {
   methods:{
     getQuestion(){
       if (this.currentPage <= 10 ){
-        axios.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage}`)
+        axios.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage + 1}`)
             .then((res)=>{
               this.questionData = res.data.data;
               console.log(this.answerArray);

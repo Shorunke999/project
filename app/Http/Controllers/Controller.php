@@ -17,16 +17,6 @@ class Controller extends BaseController
     }
     public function answerCheck(Request $request)
     {
-        $emptyIdArray=[];
-        $emptyAnswerArray=[];
-        //$idArray = array_push($emptyIdArray,$request->each()->questionId);
-         //$answerArray = array_push($emptyAnswerArray,$request->each()->answer);
-        foreach($request as $aa){
-            $idArray = array_push($emptyIdArray , $aa->questionId);
-            $answerArray = array_push($emptyAnswerArray , $aa->answer);
-            //get all the id of the request obj in idArray and answer in answerArray 
-        }           
-        $data =\App\Models\answer::whereIn('questionId' , $idArray)->get();
         
     }
 }

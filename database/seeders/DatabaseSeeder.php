@@ -14,16 +14,23 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        $data = \App\Models\Questions::create([
+        \App\Models\Questions::create([
             'question' => 'what is not me',
              'answer' => 'all of the above',
-        ])->answer()->create([
-            'answer'=>'none of thr above'
-        ]);/*->options()->each([
-            ['option'=>'bird'],
-            ['option'=>'feather'],
-            ['option'=>'all of the above'],
-           ['option'=> 'animal']
-         ])->create();*/
+        ]);
+        \App\Models\Options::create([[
+            'questionId' => 1,
+             'option' => 'all of the above'
+        ],
+        ['questionId' => 1,
+             'option' => 'me',
+    ],
+    ['questionId' => 1,
+             'option'=>'not me',] 
+             ,
+             ['questionId' => 1,
+             'option' => 'null',] 
+           
+]);
     }
 }
