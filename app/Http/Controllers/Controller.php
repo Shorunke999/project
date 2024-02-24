@@ -17,11 +17,14 @@ class Controller extends BaseController
     }
     public function answerCheck(Request $request)
     {
-        $questionIdArray = collect($request['Answer'])->pluck('questionId');
-        $dataFromDb = \App\Models\answer::whereIn('questionId',$questionIdArray)->pluck('answer');
+        $questionIdArray = collect($request->Answer)->pluck('questionId');//get questionId in form of array for use in the db
+        $dataFromDb = \App\Models\answer::whereIn('questionId',$questionIdArray)->pluck('answer');//get answer in array
+        $score = 0;
+        //loop through the answer from db
         foreach($dataFromDb as $data){
-            $request['Answer']->map(function ($array_mapped) {
-                if($array_mapped == $data){
+            //map through the re
+            $request->Answer->map(function ($array_mapped) {
+                if($array_mapped->answer == $data){
                     $score = $score + 1;
                 }
             });

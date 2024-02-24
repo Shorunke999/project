@@ -11,10 +11,10 @@ const store = createStore({
         },
     getters:{},
     actions:{
-        authAction({commit},info){
-                sessionStorage.setItem('TOKEN',info.data.token);
-                commit('setUser',info);
-            },
+        authAction({commit},info){  
+            sessionStorage.setItem('TOKEN',info.data.token);
+            commit('setUser',info);   
+        },
         signOut({commit}){
             commit('logout');
         },

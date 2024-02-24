@@ -48,25 +48,32 @@
       </div>
   </template>
   
-<script setup>
+<script>
   import store from '../store/index';
   import axiosClient from '../axios/axios';
-  const user ={
+  export default{
+    data() {
+      return {
+        user:{
           name:'',
           email: '',
           password: '',
-          password_confirmation:''
-  };
-  function register(){
-    axiosClient.post('http://127.0.0.1:8000/api/register',user)
-    .then((res)=>{
-        console.log(res);
-        store.dispatch('authAction',res)
-        .then(()=>{
-            this.$router.push({
-              name:'Dashboard'});
-            });
-    })
+          password_confirmation:'',
+        }
+      }
+    },
+    methods:{
+      register(){
+        axiosClient.post('http://127.0.0.1:8000/api/register',this.user)
+        .then((res)=>{
+            console.log(res.token);
+            store.dispatch('authAction',res)
+            .then(()=>{
+                this.$router.push({
+                  name:'Dashboard'});
+                });
+        })
   }
-  
+    }
+  }
 </script>

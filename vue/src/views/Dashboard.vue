@@ -1,7 +1,7 @@
 <template>
     <div>
       <pageComponent> 
-        <div class="flex items-center text-black justify-center" v-if="questionData < 3">
+        <div class="flex items-center text-black justify-center" v-if="questionData">
            <h1 class="text-3xl font-bold text-gray-900">Text Question</h1>
            <div>
              {{ questionData.question }} 
@@ -25,6 +25,7 @@
     </div>
 </template>
 <script>
+import axiosClient from "../axios/axios";
 import axios from "axios";
 import pageComponent from '../components/pageComponent.vue';
 export default {
@@ -36,16 +37,17 @@ export default {
       currentPage: 0,
       questionData:{},
       studentAnswer:{},
-      answerArray: JSON.parse(localStorage.getItem('answerArray')) || [],
+      answerArray: JSON.parse(localStorage.getItem('answerArray')) || []
     }
   },
   methods:{
     getQuestion(){
-      if (this.currentPage < 3 ){
-        axios.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage + 1}`)
+      if (this.currentPage < 2 ){
+        axiosClient.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage + 1}`)
             .then((res)=>{
               this.questionData = res.data.data;
               console.log(this.answerArray);
+              console.log(this.questionData);
             });
       }else{
         this.questionData = null;
@@ -55,7 +57,7 @@ export default {
     nextPage(){ 
       if(this.studentAnswer[this.currentPage])
       {
-        this.answerArray[Answer].push({
+        this.answerArray.push({
           questionId: this.questionData.id,
           answer: this.studentAnswer[this.currentPage]
           });   
@@ -83,7 +85,7 @@ export default {
 },
 
     submit(){
-      axios.post('http://127.0.0.1:8000/api/answerCheck',this.answerArray)
+      axiosClient.post('http://127.0.0.1:8000/api/answerCheck',this.answerArray)
       .then((res)=>{
         this.$router.push({
           name:'Score',
@@ -97,9 +99,11 @@ export default {
   mounted() {
     if (localStorage.getItem('answerArray')){
       this.currentPage = JSON.parse(localStorage.getItem('answerArray')).length;
-      console.log(this.currentPage);
+      console.log('this is the current page lenght to test the lenght method' + this.currentPage);
       this.getQuestion();
     }else{
+      
+      console.log('this is the current page lenght to test the lenght method' + this.currentPage);
       this.getQuestion();
     }
   },
