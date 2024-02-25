@@ -10,13 +10,16 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
     public function question(){
-        $data = \App\Models\Questions::inRandomOrder(2)
+        $data = \App\Models\Questions::inRandomOrder(2)//change to number of 
         ->with('options')
         ->paginate(1);
          return new \App\Http\Resources\QuestionRecource($data[0]);
     }
     public function answerCheck(Request $request)
     {
+        /* e.g of data/Request from front end 
+        answerArray:[{"questionId":2,"answer":"all of the above"},
+        {"questionId":1,"answer":"all of the above"}]*/
         $questionIdArray = collect($request->Answer)->pluck('questionId');//get questionId in form of array for use in the db
         $dataFromDb = \App\Models\answer::whereIn('questionId',$questionIdArray)->pluck('answer');//get answer in array
         $score = 0;
