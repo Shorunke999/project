@@ -27,8 +27,10 @@ const store = createStore({
             axiosClient.post('http://127.0.0.1:8000/api/logout')
                 .then(()=>{
                     sessionStorage.removeItem('TOKEN');
+                    localStorage.removeItem('remainingTime');
                     state.user.data ={};
-                    state.user.token = null
+                    state.user.token = null;
+                    
                 });
         },
         setUser: (state, userData)=>{

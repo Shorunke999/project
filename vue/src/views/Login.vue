@@ -3,9 +3,6 @@
         <form class="space-y-6" @submit.prevent="login">
           <div v-if="errorMsg" class="flex items-center bg-red-600 text-white-rounded">
             {{ errorMsg }}
-            <span @click="errorMsg=''" class="hover:bg-rgb[0,0,0,0.2]">
-              put svg to cancel the displayed error message
-            </span>
           </div>
           <div>
             <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
@@ -58,8 +55,7 @@ function login(){
               name:'Dashboard'});
             })
     }).catch((error)=>{
-              //errorMsg.value = err.error;
-              console.log(error.response.data.errorData);
+              errorMsg.value = error.response.data.message;
             });
   }
 </script>

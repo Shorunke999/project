@@ -37,6 +37,9 @@
             <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
           </div>
         </form>
+        <div v-if="errorMessage" class='justify-center bg-red-500 '>
+          {{errorMessage}}
+        </div>
   
         <p class="mt-10 text-center text-sm text-gray-500">
           Not a member?
@@ -59,21 +62,24 @@
           email: '',
           password: '',
           password_confirmation:'',
-        }
+        },
+        errorMessage:null
       }
     },
-    methods:{
+    methods:{  
       register(){
-        axiosClient.post('http://127.0.0.1:8000/api/register',this.user)
-        .then((res)=>{
-            console.log(res.token);
-            store.dispatch('authAction',res)
-            .then(()=>{
-                this.$router.push({
-                  name:'Dashboard'});
-                });
-        })
-  }
+           axiosClient.post('http://127.0.0.1:8000/api/register',this.user)
+          .then((res)=>{
+              console.log(res.token);
+              store.dispatch('authAction',res)
+              .then(()=>{
+                  this.$router.push({
+                    name:'Dashboard'});
+                  });
+            }).catch((e)=>{ 
+              this.errorMessage = e.response.data.message;
+            });
     }
   }
+}
 </script>

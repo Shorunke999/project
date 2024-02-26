@@ -2,7 +2,7 @@
     <div>
       <pageComponent> 
         <div class="flex items-center text-black justify-center" v-if="questionData">
-          <div>
+          <div class="mt-4 bg-blue-500 px-4">
             <p>{{ countdown }}</p>
           </div>
            <h1 class="text-3xl font-bold text-gray-900">Text Question</h1>
@@ -74,7 +74,17 @@ export default {
       }, 1000);
     },
     nextPage(){ 
-      if(this.studentAnswer[this.currentPage])
+      if(this.answerArray[this.currentPage]){
+        //
+        this.answerArray[this.currentPage] = {
+          questionId: this.questionData.id,
+          answer: this.studentAnswer[this.currentPage]
+        };
+        console.log(this.answerArray);
+          localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
+          this.currentPage++;  
+          this.getQuestion();
+      }else if(this.studentAnswer[this.currentPage])
       {
         this.answerArray.push({
           questionId: this.questionData.id,
@@ -103,8 +113,13 @@ export default {
        }
   },
     submit(){
-      axiosClient.post('http://127.0.0.1:8000/api/answerCheck',this.answerArray)
+      console.log(this.answerArray);
+      axiosClient.post('http://127.0.0.1:8000/api/answerCheck',{
+        Answer:this.answerArray,
+        timeLeft:parseInt(localStorage.getItem('remainingTime'))
+      })
       .then((res)=>{
+        localStorage.removeItem('remainingTime');
         this.$router.push({
           name:'Score',
           query: {
@@ -114,10 +129,9 @@ export default {
       });
     },
     formatTime(timeInSeconds) {
-      const hours = Math.floor(timeInSeconds / 3600);
       const minutes = Math.floor((timeInSeconds % 3600) / 60);
       const seconds = timeInSeconds % 60;
-      return `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
+      return `${this.pad(minutes)}:${this.pad(seconds)}`;
     },
     pad(num) {
       return num.toString().padStart(2, '0');
@@ -132,13 +146,11 @@ export default {
       this.remainingTime = 30 * 60; // 30 minutes in seconds
     }
     this.startCountdown();
+    //for student answer
     if (localStorage.getItem('answerArray')){
       this.currentPage = JSON.parse(localStorage.getItem('answerArray')).length;
-      console.log('this is the current page lenght to test the lenght method' + this.currentPage);
       this.getQuestion();
     }else{
-      
-      console.log('this is the current page lenght to test the lenght method' + this.currentPage);
       this.getQuestion();
     }
   },

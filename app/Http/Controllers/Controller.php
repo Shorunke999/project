@@ -19,7 +19,8 @@ class Controller extends BaseController
     {
         /* e.g of data/Request from front end 
         answerArray:[{"questionId":2,"answer":"all of the above"},
-        {"questionId":1,"answer":"all of the above"}]*/
+        {"questionId":1,"answer":"all of the above"}],
+        timeLeft: */
         $answerArray = $request->answerArray;
     
         // Extract question ids from the answerArray
@@ -35,7 +36,7 @@ class Controller extends BaseController
             $userAnswer = $answer['answer'];
     
             if ($answersFromDb->has($questionId)) {
-                $correctAnswer = $answersFromDb[]// $answersFromDb[$questionId];
+                $correctAnswer = $answersFromDb[$s];// $answersFromDb[$questionId];
                 if ($userAnswer === $correctAnswer) {
                     $score++;
                 }
