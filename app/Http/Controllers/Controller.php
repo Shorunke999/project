@@ -20,20 +20,32 @@ class Controller extends BaseController
         /* e.g of data/Request from front end 
         answerArray:[{"questionId":2,"answer":"all of the above"},
         {"questionId":1,"answer":"all of the above"}]*/
-        $questionIdArray = collect($request->Answer)->pluck('questionId');//get questionId in form of array for use in the db
-        $dataFromDb = \App\Models\answer::whereIn('questionId',$questionIdArray)->pluck('answer');//get answer in array
+        $answerArray = $request->answerArray;
+    
+        // Extract question ids from the answerArray
+        $questionIds = collect($answerArray)->pluck('questionId');
+    
+        // Fetch answers from the database for the given questionIds
+        $answersFromDb = \App\Models\Answer::whereIn('questionId', $questionIds)->pluck('answer', 'questionId');
+    
         $score = 0;
-        //loop through the answer from db
-        foreach($dataFromDb as $data){
-            //map through the re
-            $request->Answer->map(function ($array_mapped) {
-                if($array_mapped->answer == $data){
-                    $score = $score + 1;
+    
+        foreach ($answerArray as $answer) {
+            $questionId = $answer['questionId'];
+            $userAnswer = $answer['answer'];
+    
+            if ($answersFromDb->has($questionId)) {
+                $correctAnswer = $answersFromDb[]// $answersFromDb[$questionId];
+                if ($userAnswer === $correctAnswer) {
+                    $score++;
                 }
-            });
+            }
         }
-        $scorePercent = ($score / 10) * 100;
-        return response([
+    
+        $totalQuestions = count($answerArray);
+        $scorePercent = ($score / $totalQuestions) * 100;
+    
+        return response()->json([
             'score' => $scorePercent
         ]);
     }

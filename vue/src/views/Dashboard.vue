@@ -2,6 +2,9 @@
     <div>
       <pageComponent> 
         <div class="flex items-center text-black justify-center" v-if="questionData">
+          <div>
+            <p>{{ countdown }}</p>
+          </div>
            <h1 class="text-3xl font-bold text-gray-900">Text Question</h1>
            <div>
              {{ questionData.question }} 
@@ -37,7 +40,10 @@ export default {
       currentPage: 0,
       questionData:{},
       studentAnswer:{},
-      answerArray: JSON.parse(localStorage.getItem('answerArray')) || []
+      answerArray: JSON.parse(localStorage.getItem('answerArray')) || [],
+      countdown: '30:00:00',
+      timer: null,
+      remainingTime: 0,
     }
   },
   methods:{
@@ -53,6 +59,19 @@ export default {
         this.questionData = null;
 
       }
+    },
+    startCountdown() {
+      this.timer = setInterval(() => {
+        this.remainingTime--;
+        localStorage.setItem('remainingTime', this.remainingTime.toString()); // Store remaining time in localStorage
+        if (this.remainingTime <= 0) {
+          clearInterval(this.timer);
+          // Handle test end here
+          this.submit();
+        } else {
+          this.countdown = this.formatTime(this.remainingTime);
+        }
+      }, 1000);
     },
     nextPage(){ 
       if(this.studentAnswer[this.currentPage])
@@ -81,9 +100,8 @@ export default {
         }
       } else {
         alert('You are already on the first page.');
-      }
-},
-
+       }
+  },
     submit(){
       axiosClient.post('http://127.0.0.1:8000/api/answerCheck',this.answerArray)
       .then((res)=>{
@@ -94,9 +112,26 @@ export default {
           }
         });
       });
-    }
+    },
+    formatTime(timeInSeconds) {
+      const hours = Math.floor(timeInSeconds / 3600);
+      const minutes = Math.floor((timeInSeconds % 3600) / 60);
+      const seconds = timeInSeconds % 60;
+      return `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
+    },
+    pad(num) {
+      return num.toString().padStart(2, '0');
+    },
   },
   mounted() {
+    // Check if there is remaining time stored in localStorage
+    const storedRemainingTime = localStorage.getItem('remainingTime');
+    if (storedRemainingTime) {
+      this.remainingTime = parseInt(storedRemainingTime);
+    } else {
+      this.remainingTime = 30 * 60; // 30 minutes in seconds
+    }
+    this.startCountdown();
     if (localStorage.getItem('answerArray')){
       this.currentPage = JSON.parse(localStorage.getItem('answerArray')).length;
       console.log('this is the current page lenght to test the lenght method' + this.currentPage);
