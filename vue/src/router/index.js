@@ -22,14 +22,9 @@ const routes = [
                 component:Dashboard
             },
             {
-                path:'/survey',
-                name: 'Survey',
+                path:'/score',
+                name: 'Score',
                 component:Score
-            },
-            {
-                path:'/survey/Create',
-                name: 'surveyCreate',
-                component:SurveyView
             },
         ]
     },

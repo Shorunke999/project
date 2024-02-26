@@ -1,6 +1,6 @@
 <template>
       <pageComponent>
-        <div class="bg-green-600 hover:bg-gray-500 justify-center" >
+        <div class="bg-green-600 hover:bg-gray-500 justify-center" v-if="hideModal">
               <button @click="submit">Click to see result</button>
           </div>
         <div class=" items-center text-black justify-center mt-4 hover:bg-gray-500" v-if="showModal">
@@ -16,19 +16,23 @@ export default {
     return{
       score: this.$route.query.score,
       showModal: false,
+      hideModal:true,
       timer: null,
-      remainingTime: 0,
+      timeRemaining: 0,
     }
   },
   methods:{
     submit(){
       this.showModal = true
+      this.hideModal = false
       this.timer = setInterval(() => {
-        this.remainingTime--;
-        if (this.remainingTime <= 0) {
+        this.timeRemaining--;
+
+        if (this.timeRemaining <= 0) {
           store.dispatch('signOut')
           .then(()=>{
             localStorage.removeItem('answerArray');
+             localStorage.removeItem('timeRemaining');
             this.$router.push({
               name:'Login'
             });
@@ -39,7 +43,6 @@ export default {
     finish(){
       store.dispatch('signOut')
       .then(()=>{
-        localStorage.removeItem('answerArray');
         this.$router.push({
           name:'Login'
         });
@@ -47,8 +50,11 @@ export default {
     }
   },
   mounted() {
-    if(localStorage.getItem('finishTime')){
-      this.remainingTime = parseInt(localStorage.getItem('finishTime'));
+    if(localStorage.getItem('timeRemaining')){
+      this.remainingTime = parseInt(localStorage.getItem('timeRemaining'));
+    }else{
+      this.remainingTime = 60;
+      localStorage.removeItem('remainingTime');
     }
   }
 }

@@ -26,7 +26,6 @@
 </template>
 <script>
 import axiosClient from "../axios/axios";
-import axios from "axios";
 import pageComponent from '../components/pageComponent.vue';
 import store from "../store";
 export default {
@@ -51,7 +50,7 @@ export default {
             .then((res)=>{
               this.questionData = res.data.data;
               console.log(this.answerArray);
-              console.log(this.questionData);
+              console.log(this.currentPage);
             });
       }else{
         this.questionData = null;
@@ -90,17 +89,11 @@ export default {
           });   
           console.log(this.answerArray);
           localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
-          this.currentPage++;  
-          this.getQuestion();
-        }else if(this.currentPage = 2){
-            console.log(this.answerArray);
+          this.currentPage++;
+          if (this.currentPage = 2){
             console.log(parseInt(localStorage.getItem('remainingTime')))
-            axiosClient.post('http://127.0.0.1:8000/api/answerCheck',{
-              Answer:this.answerArray,
-              timeLeft:parseInt(localStorage.getItem('remainingTime'))
-            })
+            axiosClient.get('http://127.0.0.1:8000/api/answerCheck')
             .then((res)=>{
-              localStorage.removeItem('remainingTime');
               this.$router.push({
                 name:'Score',
                 query: {
@@ -108,6 +101,9 @@ export default {
                 }
               });
             });
+          }else{
+            this.getQuestion();
+          }
         }else{
         alert('pls make sure to select an option');
       }

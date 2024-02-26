@@ -102,7 +102,6 @@
   
   const navigation = [
     { name: 'Dashboard',to:{name:'Dashboard'}, current: true },
-    { name: 'Survey', to:{name:'Survey'}, current: false },
   ]
   const userNavigation = [
     { name: 'Sign out', },

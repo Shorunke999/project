@@ -15,12 +15,13 @@ class Controller extends BaseController
         ->paginate(1);
          return new \App\Http\Resources\QuestionRecource($data[0]);
     }
-    public function answerCheck(Request $request)
+    public function answerCheck()
     {
+        
         /* e.g of data/Request from front end 
         answerArray:[{"questionId":2,"answer":"all of the above"},
         {"questionId":1,"answer":"all of the above"}],
-        timeLeft: */
+        timeLeft: 
         $answerArray = $request->answerArray;
     
         // Extract question ids from the answerArray
@@ -44,10 +45,13 @@ class Controller extends BaseController
         }
     
         $totalQuestions = count($answerArray);
-        $scorePercent = ($score / $totalQuestions) * 100;
+        $scorePercent = ($score / $totalQuestions) * 100;*/
     
         return response()->json([
-            'score' => $scorePercent
+            'data' => 20
         ]);
+        //response()->json([
+         //   'score' => $scorePercent
+        //]);
     }
 }
