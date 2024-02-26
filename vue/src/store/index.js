@@ -13,6 +13,7 @@ const store = createStore({
     actions:{
         authAction({commit},info){  
             sessionStorage.setItem('TOKEN',info.data.token);
+            localStorage.removeItem('remainingTime');
             commit('setUser',info);   
         },
         signOut({commit}){

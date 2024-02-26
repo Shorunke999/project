@@ -21,9 +21,6 @@
             <button @click="backPage" class="bg-blue-500 hover:bg-gray-500 justify-start"> Back </button>
            </div>
           </div>
-          <div v-else class="bg-green-600 hover:bg-gray-500 justify-center" >
-              <button @click="submit">Click to see result</button>
-          </div>
       </pageComponent>
     </div>
 </template>
@@ -31,6 +28,7 @@
 import axiosClient from "../axios/axios";
 import axios from "axios";
 import pageComponent from '../components/pageComponent.vue';
+import store from "../store";
 export default {
   components: {
     pageComponent
@@ -94,8 +92,23 @@ export default {
           localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
           this.currentPage++;  
           this.getQuestion();
-        }
-      else{
+        }else if(this.currentPage = 2){
+            console.log(this.answerArray);
+            console.log(parseInt(localStorage.getItem('remainingTime')))
+            axiosClient.post('http://127.0.0.1:8000/api/answerCheck',{
+              Answer:this.answerArray,
+              timeLeft:parseInt(localStorage.getItem('remainingTime'))
+            })
+            .then((res)=>{
+              localStorage.removeItem('remainingTime');
+              this.$router.push({
+                name:'Score',
+                query: {
+                  score: res
+                }
+              });
+            });
+        }else{
         alert('pls make sure to select an option');
       }
     },
@@ -112,22 +125,6 @@ export default {
         alert('You are already on the first page.');
        }
   },
-    submit(){
-      console.log(this.answerArray);
-      axiosClient.post('http://127.0.0.1:8000/api/answerCheck',{
-        Answer:this.answerArray,
-        timeLeft:parseInt(localStorage.getItem('remainingTime'))
-      })
-      .then((res)=>{
-        localStorage.removeItem('remainingTime');
-        this.$router.push({
-          name:'Score',
-          query: {
-            score: res
-          }
-        });
-      });
-    },
     formatTime(timeInSeconds) {
       const minutes = Math.floor((timeInSeconds % 3600) / 60);
       const seconds = timeInSeconds % 60;
@@ -139,21 +136,18 @@ export default {
   },
   mounted() {
     // Check if there is remaining time stored in localStorage
-    const storedRemainingTime = localStorage.getItem('remainingTime');
-    if (storedRemainingTime) {
-      this.remainingTime = parseInt(storedRemainingTime);
-    } else {
-      this.remainingTime = 30 * 60; // 30 minutes in seconds
-    }
-    this.startCountdown();
     //for student answer
-    if (localStorage.getItem('answerArray')){
+    if(localStorage.getItem('answerArray') && localStorage.getItem('remainingTime')){  
+      this.remainingTime = parseInt(localStorage.getItem('remainingTime')); 
       this.currentPage = JSON.parse(localStorage.getItem('answerArray')).length;
       this.getQuestion();
+      this.startCountdown();
     }else{
+      this.remainingTime = 30 * 60;
       this.getQuestion();
+      this.startCountdown();
     }
-  },
+ }
 }
 </script>
 //https://forms.gle/VvhfZy6fvG8kUAzQ7
