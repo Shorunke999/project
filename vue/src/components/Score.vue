@@ -26,13 +26,13 @@ export default {
       this.showModal = true
       this.hideModal = false
       this.timer = setInterval(() => {
-        this.timeRemaining--;
-
-        if (this.timeRemaining <= 0) {
+        this.timeRemaining--
+        localStorage.setItem('timeRemaining', this.timeRemaining.toString())
+        if (parseInt(this.timeRemaining) <= 0) {
+          localStorage.removeItem('timeRemaining');
           store.dispatch('signOut')
           .then(()=>{
             localStorage.removeItem('answerArray');
-             localStorage.removeItem('timeRemaining');
             this.$router.push({
               name:'Login'
             });
@@ -50,12 +50,14 @@ export default {
     }
   },
   mounted() {
-    if(localStorage.getItem('timeRemaining')){
-      this.remainingTime = parseInt(localStorage.getItem('timeRemaining'));
+    if(this.timeRemaining){
+      this.timeRemaining = parseInt(localStorage.getItem('timeRemaining'))
     }else{
-      this.remainingTime = 60;
-      localStorage.removeItem('remainingTime');
+      this.timeRemaining = 10 * 60
     }
+   
+    console.log(this.timeRemaining)
   }
+  
 }
 </script>

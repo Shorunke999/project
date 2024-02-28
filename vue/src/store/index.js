@@ -25,14 +25,10 @@ const store = createStore({
     },
     mutations:{
         logout: state =>{
-            axiosClient.post('http://127.0.0.1:8000/api/logout')
-                .then(()=>{
-                    sessionStorage.removeItem('TOKEN');
+                   sessionStorage.removeItem('TOKEN');
                     localStorage.removeItem('remainingTime');
                     state.user.data ={};
                     state.user.token = null;
-                    
-                });
         },
         setUser: (state, userData)=>{
             state.user.token = userData.data.token;

@@ -70,10 +70,6 @@
       register(){
            axiosClient.post('http://127.0.0.1:8000/api/register',this.user)
           .then((res)=>{
-            if(localStorage.getItem('remainingTime') || localStorage.getItem('answerArray')){
-              localStorage.removeItem('remainingTime');
-              localStorage.removeItem('answerArray');
-            }
               console.log(res.token);
               store.dispatch('authAction',res)
               .then(()=>{

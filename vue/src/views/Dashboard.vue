@@ -27,7 +27,6 @@
 <script>
 import axiosClient from "../axios/axios";
 import pageComponent from '../components/pageComponent.vue';
-import store from "../store";
 export default {
   components: {
     pageComponent
@@ -71,7 +70,7 @@ export default {
       }, 1000);
     },
     nextPage(){ 
-      if(this.answerArray[this.currentPage]){
+      if(this.answerArray[this.currentPage] && this.studentAnswer[this.currentPage] ){
         //
         this.answerArray[this.currentPage] = {
           questionId: this.questionData.id,
@@ -90,14 +89,15 @@ export default {
           console.log(this.answerArray);
           localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
           this.currentPage++;
-          if (this.currentPage = 2){
+          if (this.currentPage == 2){
             console.log(parseInt(localStorage.getItem('remainingTime')))
+            console.log(this.currentPage)
             axiosClient.get('http://127.0.0.1:8000/api/answerCheck')
             .then((res)=>{
               this.$router.push({
                 name:'Score',
                 query: {
-                  score: res
+                  score: res.data
                 }
               });
             });
@@ -133,9 +133,11 @@ export default {
   mounted() {
     // Check if there is remaining time stored in localStorage
     //for student answer
-    if(localStorage.getItem('answerArray') && localStorage.getItem('remainingTime')){  
-      this.remainingTime = parseInt(localStorage.getItem('remainingTime')); 
+    if (localStorage.getItem('answerArray')){
       this.currentPage = JSON.parse(localStorage.getItem('answerArray')).length;
+    }
+    if(localStorage.getItem('remainingTime')){  
+      this.remainingTime = parseInt(localStorage.getItem('remainingTime')); 
       this.getQuestion();
       this.startCountdown();
     }else{
