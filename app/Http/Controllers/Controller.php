@@ -15,13 +15,12 @@ class Controller extends BaseController
         ->paginate(1);
          return new \App\Http\Resources\QuestionRecource($data[0]);
     }
-    public function answerCheck()
+    public function answerCheck(Request $request)
     {
         
-        /* e.g of data/Request from front end 
+        /*e.g of data/Request from front end 
         answerArray:[{"questionId":2,"answer":"all of the above"},
-        {"questionId":1,"answer":"all of the above"}],
-        timeLeft: 
+        {"questionId":1,"answer":"all of the above"}],*/
         $answerArray = $request->answerArray;
     
         // Extract question ids from the answerArray
@@ -37,7 +36,7 @@ class Controller extends BaseController
             $userAnswer = $answer['answer'];
     
             if ($answersFromDb->has($questionId)) {
-                $correctAnswer = $answersFromDb[$s];// $answersFromDb[$questionId];
+                $correctAnswer = $answersFromDb[answer];// $answersFromDb[$questionId];
                 if ($userAnswer === $correctAnswer) {
                     $score++;
                 }
@@ -45,13 +44,9 @@ class Controller extends BaseController
         }
     
         $totalQuestions = count($answerArray);
-        $scorePercent = ($score / $totalQuestions) * 100;*/
-    
-        return response()->json([
-            'data' => 20
+        $scorePercent = ($score / $totalQuestions) * 100;
+        response()->json([
+           'score' => $scorePercent
         ]);
-        //response()->json([
-         //   'score' => $scorePercent
-        //]);
     }
 }

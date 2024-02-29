@@ -97,7 +97,7 @@ export default {
               this.$router.push({
                 name:'Score',
                 query: {
-                  score: res.data
+                  score: res.score
                 }
               });
             });

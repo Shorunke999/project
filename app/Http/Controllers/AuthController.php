@@ -27,6 +27,7 @@ class AuthController extends Controller
 
         ]);
         $token = $user->createToken('user1')->plainTextToken;
+        auth()->login();
         return response()->json([
             'token' => $token,
         ]);
@@ -44,18 +45,18 @@ class AuthController extends Controller
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-     
+        auth()->login();
         return response([
             'token' =>$user->createToken($request->device_name)->plainTextToken,
             'user'=> $user
         ]) ;
     }
-    /*public function logout(){
-        $user = Auth::user();
+    public function logout(){
+        auth()->user();
         $user->currentAccessToken()->delete();
         return response([
             'success' => true
         ]);
-    }*/
+    }
   
 }
