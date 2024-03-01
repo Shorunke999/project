@@ -11,7 +11,5 @@ class Questions extends Model
     public function options(){
         return $this->hasMany(\App\Models\options::class,'questionId');
     }
-    public function answer(){
-        return $this->hasOne(\App\Models\answer::class,'questionId');
-    }
+
 }

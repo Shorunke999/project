@@ -89,7 +89,7 @@ export default {
           console.log(this.answerArray);
           localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
           this.currentPage++;
-          if (this.currentPage == 2){
+          if (this.currentPage == 1){
             console.log(parseInt(localStorage.getItem('remainingTime')))
             console.log(this.currentPage)
             axiosClient.get('http://127.0.0.1:8000/api/answerCheck')

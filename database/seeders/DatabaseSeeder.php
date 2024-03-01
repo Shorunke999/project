@@ -16,21 +16,6 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\Questions::create([
             'question' => 'what is not me',
-             'answer' => 'all of the above',
         ]);
-        \App\Models\Options::create([[
-            'questionId' => 1,
-             'option' => 'all of the above'
-        ],
-        ['questionId' => 1,
-             'option' => 'me',
-    ],
-    ['questionId' => 1,
-             'option'=>'not me',] 
-             ,
-             ['questionId' => 1,
-             'option' => 'null',] 
-           
-]);
     }
 }

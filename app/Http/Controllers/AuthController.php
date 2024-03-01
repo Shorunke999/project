@@ -20,14 +20,14 @@ class AuthController extends Controller
                     ]
                 ]);
         
-        $user = \App\Models\User::create([
+       $user =  \App\Models\User::create([
                     'name' => $request->name,
                     'email' => $request->email,
                     'password'=> Hash::make($request->password),
 
         ]);
+        Auth::login($user);
         $token = $user->createToken('user1')->plainTextToken;
-        auth()->login();
         return response()->json([
             'token' => $token,
         ]);
@@ -45,18 +45,10 @@ class AuthController extends Controller
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-        auth()->login();
         return response([
-            'token' =>$user->createToken($request->device_name)->plainTextToken,
+            'token' =>$user->createToken('user')->plainTextToken,
             'user'=> $user
         ]) ;
-    }
-    public function logout(){
-        auth()->user();
-        $user->currentAccessToken()->delete();
-        return response([
-            'success' => true
-        ]);
     }
   
 }
