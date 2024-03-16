@@ -43,17 +43,14 @@ export default {
     }
   },
   methods:{
-    getQuestion(){
-      if (this.currentPage < 2 ){
-        axiosClient.get(`http://127.0.0.1:8000/api/getQuestion?page=${this.currentPage + 1}`)
+    getQuestion(value){
+      if (value < 2 ){
+        axiosClient.get(`http://127.0.0.1:8000/api/getQuestion?page=${value + 1}`)
             .then((res)=>{
               this.questionData = res.data.data;
-              console.log(this.answerArray);
-              console.log(this.currentPage);
             });
       }else{
-        this.questionData = null;
-
+        this.questionData = null
       }
     },
     startCountdown() {
@@ -76,23 +73,23 @@ export default {
           questionId: this.questionData.id,
           answer: this.studentAnswer[this.currentPage]
         };
-        console.log(this.answerArray);
           localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
           this.currentPage++;  
-          this.getQuestion();
+          this.getQuestion(this.currentPage);
       }else if(this.studentAnswer[this.currentPage])
       {
-        this.answerArray.push({
+          this.answerArray[this.currentPage] = {
           questionId: this.questionData.id,
           answer: this.studentAnswer[this.currentPage]
-          });   
-          console.log(this.answerArray);
+        }; 
           localStorage.setItem('answerArray', JSON.stringify(this.answerArray)); // Update localStorage
           this.currentPage++;
-          if (this.currentPage == 1){
-            console.log(parseInt(localStorage.getItem('remainingTime')))
+          console.log(this.currentPage)
+          if (this.currentPage == 2){
+            console.log((localStorage.getItem('answerArray')))
             console.log(this.currentPage)
-            axiosClient.get('http://127.0.0.1:8000/api/answerCheck')
+            const answerValue = this.answerArray
+            axiosClient.post('http://127.0.0.1:8000/api/answerCheck', answerValue)
             .then((res)=>{
               this.$router.push({
                 name:'Score',
@@ -102,7 +99,7 @@ export default {
               });
             });
           }else{
-            this.getQuestion();
+            this.getQuestion(this.currentPage);
           }
         }else{
         alert('pls make sure to select an option');
@@ -138,11 +135,11 @@ export default {
     }
     if(localStorage.getItem('remainingTime')){  
       this.remainingTime = parseInt(localStorage.getItem('remainingTime')); 
-      this.getQuestion();
+      this.getQuestion(this.currentPage);
       this.startCountdown();
     }else{
       this.remainingTime = 30 * 60;
-      this.getQuestion();
+      this.getQuestion(this.currentPage);
       this.startCountdown();
     }
  }

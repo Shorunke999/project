@@ -20,6 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['*'],
+    
+    'access-control-allow-origin'=>['*'],
 
     'allowed_origins_patterns' => [],
 
