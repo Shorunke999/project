@@ -29,7 +29,6 @@ class Controller extends BaseController
         $answersFromDb = \App\Models\Answer::whereIn('questionId', $questionIds)->pluck('answer', 'questionId');
 
         $score = 0;
-
         // Compare user answers with the correct answers
         foreach ($answerArray as $answer) {
             // Check if the answer exists in the database
@@ -45,7 +44,7 @@ class Controller extends BaseController
         }
 
         // Return the score
-        return response()->json(['score' => $score]);
+        return response()->json(['score' => ($score/count($answerArray)* 100). '%']);
     }
 
 }
